@@ -27,7 +27,7 @@ case $1 in
       echo "Overlay not mounted."
       exit 1
     fi
-    [ -f "$(dirname $(realpath $0))}/bg3overlay.pre" ] && "$(dirname $(realpath $0))}/bg3overlay.pre"
+    [ -f "$(dirname $(realpath $0))/bg3overlay.pre" ] && . "$(dirname $(realpath $0))/bg3overlay.pre"
     fusermount -u "${_common}/${_folder}"
     rmdir "${_folder}"
     mv bg3base "${_folder}"
@@ -42,7 +42,7 @@ case $1 in
     mkdir "${_folder}"
     mkdir -p /tmp/bg3/{upper,work}
     fuse-overlayfs -o lowerdir="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/current/override":"${_common}/bg3base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${_common}/${_folder}"
-    [ -f "$(dirname $(realpath $0))}/bg3overlay.post" ] && "$(dirname $(realpath $0))}/bg3overlay.post"
+    [ -f "$(dirname $(realpath $0))/bg3overlay.post" ] && . "$(dirname $(realpath $0))/bg3overlay.post"
     ;;
   *)
     cat << EOF
