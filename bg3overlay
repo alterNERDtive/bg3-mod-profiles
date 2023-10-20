@@ -10,10 +10,10 @@ done
 
 source "$(dirname $(realpath $0))/util/folders.sh"
 
-_library=($(getBg3Library))
+_library="$(getBg3Library)"
 [ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-_common=(${_library}/steamapps/common)
-_folder=$(getBg3Folder ${_library})
+_common="${_library}/steamapps/common"
+_folder="$(getBg3Folder ${_library})"
 [ $? -eq 1 ] && echo "Steam installation folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
 
 cd "${_common}"
