@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+source "$(dirname $(realpath $0))/util/folders.sh"
+
+_library=($(getBg3Library))
+[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+
+cd "${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/"
+
+create () {
+  if [ -d "profiles/${1}" ]; then
+    echo "Baldur’s Gate 3 folder for \"${1}\" already exists."
+    exit 1
+  else
+    mkdir "profiles/${1}"
+    if [ ! -L "Baldur's Gate 3/Mods/" ]; then
+      echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
+      if [ -d "Baldur's Gate 3/Mods/" ]; then
+        mv "Baldur's Gate 3/Mods/" "profiles/${1}"
+      else
+        mkdir "profiles/${1}/Mods"
+      fi
+      ln -s "../current/Mods" "Baldur's Gate 3/Mods"
+    else
+      mkdir "profiles/${1}/Mods"
+    fi
+    mkdir -p "profiles/${1}/PlayerProfiles/Public/"
+    if [ ! -L "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" ]; then
+      echo "Non-link \"modsettings.lsx\" detected! Setting up symbolic link …"
+      if [ -f "profiles/${1}/PlayerProfiles/Public/modsettings.lsx" ]; then
+        mv "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" "profiles/${1}/PlayerProfiles/Public/"
+      else
+        touch "profiles/${1}/PlayerProfiles/Public/modsettings.lsx"
+      fi
+      ln -s "../../../current/PlayerProfiles/Public/modsettings.lsx" "Baldur's Gate 3/PlayerProfiles/Public/"
+    else
+      touch "profiles/${1}/PlayerProfiles/Public/modsettings.lsx"
+    fi
+    mkdir "profiles/${1}/override"
+    switch "${1}"
+  fi
+}
+
+list () {
+  if [ -d "profiles" ]; then
+    echo -e "Mod Profiles:"
+    ls profiles | tr " " "\n"
+  else
+    echo "No profile folder present. Try \"$(basename $0) --create PROFILE\"."
+  fi
+  current=$(readlink -- current)
+  if [ -z $current ]; then
+    echo -e "\nNo link to current profile found. Try \"$(basename $0) --create PROFILE\"."
+  else
+    echo -e "\nCurrent Profile:\n${current##*/}"
+  fi
+}
+
+switch () {
+  if [ -d profiles/${1} ]; then
+    ln -nsf ./profiles/${1} current
+  else
+    echo "No Baldur’s Gate 3 folder for \"${1}\" found. Try \"$(basename $0) --help\""
+    exit 1
+  fi
+}
+
+usage () {
+  cat << EOF
+Usage: $(basename $0) [OPTION] PROFILE
+Options:
+  --create,--add,--new          Creates a new mod profile.
+  --help,-h                     Prints this help.
+  --open,--cd                   Opens a new shell in the "%AppData%/Local/Larian Studios" folder.
+  --switch                      Switch to <profile>.
+
+Empty argument list is equivalent to "--list". A single argument is equal to "--switch argument".
+EOF
+}
+
+if [ $# -eq 0 ]; then
+  list
+else
+  case $1 in
+    --create|--add|--new)
+      create $2
+      ;;
+    --help|-h)
+      usage
+      exit 1
+      ;;
+    --list|--ls)
+      list
+      ;;
+    --open|--cd)
+      $SHELL
+      ;;
+    --switch)
+      switch $2
+      ;;
+    *)
+      switch $1
+      ;;
+  esac
+fi

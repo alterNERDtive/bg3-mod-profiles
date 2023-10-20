@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+die() {
+    echo "${1}"
+    exit 1
+}
+
+for _dep in fuse-overlayfs fusermount; do
+    command -v "${_dep}" > /dev/null || die "Command \"${_dep}\" not found. Please install it and try again."
+done
+
+source "$(dirname $(realpath $0))/util/folders.sh"
+
+_library=($(getBg3Library))
+[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+_common=(${_library}/steamapps/common)
+_folder=$(getBg3Folder ${_library})
+[ $? -eq 1 ] && echo "Steam installation folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+
+cd "${_common}"
+
+mount | grep "${_common}/${_folder}" >/dev/null 2>&1
+_mounted=$?
+
+case $1 in
+  --disable)
+    if [ ${_mounted} -eq 1 ]; then
+      echo "Overlay not mounted."
+      exit 1
+    fi
+    [ -f "$(dirname $(realpath $0))}/bg3overlay.pre" ] && "$(dirname $(realpath $0))}/bg3overlay.pre"
+    fusermount -u "${_common}/${_folder}"
+    rmdir "${_folder}"
+    mv bg3base "${_folder}"
+    rm -rf /tmp/bg3/work
+    ;;
+  --enable)
+    if [ ${_mounted} -eq 0 ]; then
+      echo "Overlay already mounted."
+      exit 1
+    fi
+    mv "${_folder}" bg3base
+    mkdir "${_folder}"
+    mkdir -p /tmp/bg3/{upper,work}
+    fuse-overlayfs -o lowerdir="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/current/override":"${_common}/bg3base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${_common}/${_folder}"
+    [ -f "$(dirname $(realpath $0))}/bg3overlay.post" ] && "$(dirname $(realpath $0))}/bg3overlay.post"
+    ;;
+  *)
+    cat << EOF
+Usage: $(basename $0) OPTION
+Options:
+  --enable                      Mount overlayfs for current mod profile.
+  --disable                     Unmount overlayfs.
+EOF
+    exit 1
+    ;;
+esac
