@@ -18,7 +18,7 @@ manage separate sets of mods in conjunction with a mod manager like
 
 1. Install whatever package(s) provide(s) `fusermount` and `fuse-overlayfs` for
     your distribution.
-2. Grab an archive of this repository and extract, or clone it somewhere.
+2. Clone this repository or grab an archive and extract it somewhere.
 3. Optional: add `bg3overlay` and `bg3switch` to your `PATH`.
 4. Optional: create `bg3overlay.pre` and `bg3overlay.post` files. They will be
     executed before mounting and after unmounting the overlay, respectively.
@@ -49,3 +49,17 @@ proton prefix. You can easily access it by doing `bg3switch --cd`.
 ## Usage
 
 See [Installation](#installation), `bg3switch --help` and `bg3overlay --help`.
+
+## Troubleshooting
+
+### The game doesn’t start after changing the launch options.
+
+Double check the launch options match the example. Run `bg3overlay --enable`
+manually and see if it works.
+
+If yes, run `bg3overlay --disable` and start looking elsewhere, because it’s not
+my fault :)
+
+If not, feel free to
+[file an issue](https://github.com/alterNERDtive/bg3-mod-profiles/issues) and be
+sure to attach the output.
