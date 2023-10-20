@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 source "$(dirname $(realpath $0))/util/folders.sh"
 
-_library=($(getBg3Library))
+_library="$(getBg3Library)"
 [ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
 
 cd "${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/"
