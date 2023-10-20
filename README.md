@@ -37,14 +37,14 @@ it isn’t already active: `bg3switch PROFILE`. Now you can use the mod manager 
 your choice to install, remove or update mods. Of course you can also still do
 it manually.
 
-To install loose files mod, do _not_ extract them into the game folder directly!
-We want to keep those separate per profile. Instead install them into the
-`override` subfolder of your profile. This not only means no accidental mixups
-between profiles, but also that uninstalling / reinstalling / verifying /
-updating the game files does not affect your loose files mods in any way.
+To install loose files mods, do _not_ extract them into the game folder
+directly! We want to keep those separate per profile. Instead install them into
+the `override` subfolder of your profile. This not only means no accidental
+mixups between profiles, but also that uninstalling / reinstalling / verifying
+/ updating the game files does not affect your loose files mods in any way.
 
 Profiles are stored under `%AppData%/Local/Larian Studios` within the game’s
-proton prefix. You can easily access it by doing `bg3switch --cd`.
+proton prefix. You can easily access it by running `bg3switch --cd`.
 
 ## Usage
 
