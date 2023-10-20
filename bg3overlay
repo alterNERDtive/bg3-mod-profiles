@@ -32,6 +32,7 @@ case $1 in
     rmdir "${_folder}"
     mv bg3base "${_folder}"
     rm -rf /tmp/bg3/work
+    exit 0
     ;;
   --enable)
     if [ ${_mounted} -eq 0 ]; then
@@ -43,6 +44,7 @@ case $1 in
     mkdir -p /tmp/bg3/{upper,work}
     fuse-overlayfs -o lowerdir="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/current/override":"${_common}/bg3base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${_common}/${_folder}"
     [ -f "$(dirname $(realpath $0))/bg3overlay.post" ] && . "$(dirname $(realpath $0))/bg3overlay.post"
+    exit 0
     ;;
   *)
     cat << EOF
