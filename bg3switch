@@ -68,7 +68,9 @@ usage () {
   cat << EOF
 Usage: $(basename $0) [OPTION] PROFILE
 Options:
-  --create,--add,--new          Creates a new mod profile.
+  --create,--add,--new          Creates a new mod profile. If this is your first, your current
+                                mods will be moved to the profile and the necessary 
+                                symbolic links set up automatically.
   --help,-h                     Prints this help.
   --open,--cd                   Opens a new shell in the "%AppData%/Local/Larian Studios" folder.
   --switch                      Switch to <profile>.
