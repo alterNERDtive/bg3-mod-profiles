@@ -5,6 +5,9 @@ manage separate sets of mods in conjunction with a mod manager like
 [BG3 Mod Manager](https://github.com/LaughingLeader/BG3ModManager) or
 [Lamp](https://github.com/CHollingworth/Lamp).
 
+Well OK, at this point it’s _kind of_ a mod-manager-like thing for loose files 
+mods. Read on :)
+
 ## Features
 
 * Store an arbitrary amount of profiles. Each of them contains distinct
@@ -13,6 +16,8 @@ manage separate sets of mods in conjunction with a mod manager like
     * Loose files mods
 * Create and switch between your profiles via shell script.
 * Mount loose files mods into your game folder at runtime via overlayfs
+* Keep loose files mods separate! No more “which files did that add⁈” when you 
+  want to uninstall one of them.
 
 ## Installation
 
@@ -44,6 +49,21 @@ directly! We want to keep those separate per profile. Instead install them into
 the `override` subfolder of your profile. This not only means no accidental
 mixups between profiles, but also that uninstalling / reinstalling / verifying
 / updating the game files does not affect your loose files mods in any way.
+
+Alternatively, you can put loose files mods in their own subfolder of 
+`profiles/<name>/modular-override`:
+
+```bash
+> ls modular-override
+'00-Visible Shields'           'Detailed Laezel'            'Karlach Vanilla Scars'  'Native Mod Loader'  'Shart Scars'
+'Achievement Enabler'          'EA Loadscreens'             'Level 20'               'No Abs'
+'Colorblind Spell Slots'       'Faster Rolls Quartered'     'More Detailed Halsin'    OIO
+'Contextual Dialogue Buttons'  'Highlight Prepared Spells'  'Native Camera Tweaks'   'Script Extender'
+```
+
+Priority will be the `override` folder, then the modular overrides in 
+alphabetical order. I use this e.g. to keep my “Native Camera Mod” configuration 
+file in `override` and not have it overwritten by mod updates.
 
 Profiles are stored under `%AppData%/Local/Larian Studios` within the game’s
 proton prefix. You can easily access it by running `bg3switch --cd`.

@@ -36,6 +36,7 @@ create () {
       touch "profiles/${1}/PlayerProfiles/Public/modsettings.lsx"
     fi
     mkdir "profiles/${1}/override"
+    mkdir "profiles/${1}/modular-override"
     switch "${1}"
   fi
 }

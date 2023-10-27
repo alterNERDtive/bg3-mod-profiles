@@ -8,7 +8,26 @@ mount_overlay() {
   mv "${_folder}" bg3base
   mkdir "${_folder}"
   mkdir -p /tmp/bg3/{upper,work}
-  fuse-overlayfs -o lowerdir="${_current}/override":"${_common}/bg3base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${_common}/${_folder}"
+
+  _current="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/current"
+  if [ -d "${_current}/modular-override" ]; then
+    pushd "${_current}/modular-override"
+    declare -A _modulars=()
+    for _override in *
+    do
+      [ -d "${_override}" ] && _modulars["${_override}"]="${_current}/modular-override/${_override}"
+    done
+    popd
+  fi
+
+  if [[ ! "${#_modulars[*]}" -eq 0 ]]; then
+    # fugly, but I give up on doing this properly for now
+    _modular_overrides=$(printf "%s♫" ${_modulars[@]// /\\ })
+    _modular_overrides=${_modular_overrides//\\♫/\\ }
+    _modular_overrides=${_modular_overrides//♫/:}
+  fi
+
+  fuse-overlayfs -o lowerdir="${_current}/override":"${_modular_overrides}""${_common}/bg3base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${_common}/${_folder}"
 }
 
 unmount_overlay() {
