@@ -12,7 +12,7 @@ create () {
     exit 1
   else
     mkdir "profiles/${1}"
-    if [ ! -L "Baldur's Gate 3/Mods/" ]; then
+    if [ ! -L "Baldur's Gate 3/Mods" ]; then
       echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
       if [ -d "Baldur's Gate 3/Mods/" ]; then
         mv "Baldur's Gate 3/Mods/" "profiles/${1}"
