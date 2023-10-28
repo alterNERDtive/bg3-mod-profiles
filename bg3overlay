@@ -9,13 +9,15 @@ mount_overlay() {
   mkdir "${_folder}"
   mkdir -p /tmp/bg3/{upper,work}
 
+  declare -A _modulars=()
+
   _current="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/current"
   if [ -d "${_current}/modular-override" ]; then
     pushd "${_current}/modular-override"
-    declare -A _modulars=()
     for _override in *
     do
-      [ -d "${_override}" ] && _modulars["${_override}"]="${_current}/modular-override/${_override}"
+      [ -d "${_override}" ] && _modulars["${_override}"]="${_current}/modular-override/${_override}" \
+        && echo "Found modular loose files mod “${_override}” …"
     done
     popd
   fi
