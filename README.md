@@ -139,7 +139,8 @@ profile and the symbolic links are set up automatically.
 
 `bg3overlay --enable` will mount an overlayfs to your game’s installation 
 folder. The folder itself will be temporarily renamed to `bg3base` in order to 
-be able to mount the overlay into `Baldurs Gate`, where Steam expects the game.
+be able to mount the overlay into `Baldurs Gate 3`, where Steam expects the 
+game.
 
 The working directory and newly created files (the “upper” directory in 
 overlayfs terms) reside in `/tmp/bg3/`, which should usually be a RAM disk.
