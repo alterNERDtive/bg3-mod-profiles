@@ -12,6 +12,7 @@ mods. Read on :)
 
 * Store an arbitrary amount of profiles. Each of them contains distinct
     * "Mods" folders
+    * "Script Extender" folders
     * Mod settings files
     * Loose files mods
 * Create and switch between your profiles via shell script.
@@ -86,15 +87,33 @@ The `override` folder contains all lose file mods that you would normally
 extract directly into the game’s installation folder. They are overlaid onto it 
 at runtime.
 
+The `modular-override` folder contains loose file mods, each in their own 
+folder. They are _each_ overlaid onto the game’s installation folder at runtime. 
+The big advantage of using this approach is being able to keep each mod’s files 
+separate.
+
+Override priority is
+
+1. The `override` folder. Put e.g. your settings file for the native camera mod 
+   here; it will have higher priority than the default file shipped with the mod 
+   then.
+2. Modular overrides in alphabetical order.
+3. Anything you manually change in the game’s installation folder. (Don’t do 
+   that, please.)
+
 The `modsettings.lsx` file resides inside the same subfolder structure it would 
 normally (`PlayerProfiles/Public`). This makes zipping up your Mods – including 
 your modsettings file / load order – easier. Personally I use it for co-op 
 setups to make updating the mod list easier for the other players. _I_ update 
 everything, I zip it up, they just extract it.
 
-### Switching Mods
+The `Script Extender` folder contains anything you would usually find in 
+`Baldur's Gate 3/Script Extender`, e.g. the configuration file for [Zerd's Rules 
+As Written (RAW)](https://www.nexusmods.com/baldursgate3/mods/1329)
 
-Switching mods is the most trivial thing here. The `Mods` folder and 
+### Switching Mod Profiles
+
+Switching mod profiles is the most trivial thing here. The `Mods` folder and 
 `modsettings.lsx` files are symbolically linked from `current` to the `Baldur's 
 Gate 3` folder.
 
@@ -110,8 +129,8 @@ the link structure for the `Mods` folder looks like this:
 
 `Baldur's Gate 3/Mods` → `current/Mods` → `profile/<name>/Mods`
 
-When switching mods, the `current` symbolic link is updated to point to the 
-freshly activated / created profile. That’s it!
+When switching mod profiles, the `current` symbolic link is updated to point to 
+the freshly activated / created profile. That’s it!
 
 When you create your first profile, your current configuration is moved to the 
 profile and the symbolic links are set up automatically.
@@ -142,6 +161,6 @@ manually and see if it works.
 If yes, run `bg3overlay --disable` and start looking elsewhere, because it’s not
 my fault :)
 
-If not, feel free to
-[file an issue](https://github.com/alterNERDtive/bg3-mod-profiles/issues) and be
+If not, feel free to [file an 
+issue](https://github.com/alterNERDtive/bg3-mod-profiles/issues) and be
 sure to attach the output.
