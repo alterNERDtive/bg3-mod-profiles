@@ -10,3 +10,18 @@
   configuration there, and configuration files in this folder can have a huge 
   impact on how the game plays. It should be per profile. You can still sym link 
   the folder across profiles!
+
+# 0.2.0 (2023-10-27)
+
+* Modular loose files mods! Fuck yeah!
+
+# 0.1.1 (2023-10-20)
+
+* Fixed execution of pre and post hooks for `bg3overlay`.
+* Fixed `bg3overlay` exiting with code `1` (error) when no post hook was found.
+* Added additional string escaping, making the scripts more robust for Steam 
+  library paths containing spaces.
+
+# 0.1.0 (2023-10-20)
+
+* initial release
