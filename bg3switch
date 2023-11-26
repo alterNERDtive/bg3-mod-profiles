@@ -13,49 +13,66 @@ create () {
   else
     mkdir "profiles/${1}"
 
-    # sym link the “Mods” folder
-    if [ ! -L "Baldur's Gate 3/Mods" ]; then
-      echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
-      if [ -d "Baldur's Gate 3/Mods/" ]; then
-        mv "Baldur's Gate 3/Mods/" "profiles/${1}"
-      else
-        mkdir "profiles/${1}/Mods"
-      fi
-      ln -s "../current/Mods" "Baldur's Gate 3/Mods"
-    else
-      mkdir "profiles/${1}/Mods"
-    fi
 
-    # sym link the modsettings file
-    mkdir -p "profiles/${1}/PlayerProfiles/Public/"
-    if [ ! -L "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" ]; then
-      echo "Non-link \"modsettings.lsx\" detected! Setting up symbolic link …"
-      if [ -f "profiles/${1}/PlayerProfiles/Public/modsettings.lsx" ]; then
-        mv "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" "profiles/${1}/PlayerProfiles/Public/"
-      else
-        touch "profiles/${1}/PlayerProfiles/Public/modsettings.lsx"
-      fi
-      ln -s "../../../current/PlayerProfiles/Public/modsettings.lsx" "Baldur's Gate 3/PlayerProfiles/Public/"
-    else
-      touch "profiles/${1}/PlayerProfiles/Public/modsettings.lsx"
-    fi
-
-    # sym link the “ScriptExtender” folder
-    if [ ! -L "Baldur's Gate 3/Script Extender" ]; then
-      echo "Non-link \"Script Extender\" folder detected! Setting up symbolic link …"
-      if [ -d "Baldur's Gate 3/Script Extender/" ]; then
-        mv "Baldur's Gate 3/Script Extender/" "profiles/${1}"
-      else
-        mkdir "profiles/${1}/Script Extender"
-      fi
-      ln -s "../current/Script Extender" "Baldur's Gate 3/Script Extender"
-    else
-      mkdir "profiles/${1}/Script Extender"
-    fi
-
-    mkdir "profiles/${1}/override"
-    mkdir "profiles/${1}/modular-override"
     switch "${1}"
+  fi
+}
+
+link () {
+  if [ -z ${1} ]; then
+    _dir="current"
+  else
+    _dir="profiles/${1}"
+  fi
+
+  # sym link the “Mods” folder
+  if [ ! -L "Baldur's Gate 3/Mods" ]; then
+    echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
+    if [ -d "Baldur's Gate 3/Mods/" ]; then
+      mv "Baldur's Gate 3/Mods/" "${_dir}"
+    fi
+    ln -s "../current/Mods" "Baldur's Gate 3/Mods"
+  fi
+  if [ ! -d "${_dir}/Mods" ]; then
+    echo "Creating \"Mods\" folder …"
+    mkdir -p "${_dir}/Mods"
+  fi
+
+  # sym link the modsettings file
+  mkdir -p "${_dir}/PlayerProfiles/Public/"
+  if [ ! -L "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" ]; then
+    echo "Non-link \"modsettings.lsx\" detected! Setting up symbolic link …"
+    if [ -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
+      mv "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" "${_dir}/PlayerProfiles/Public/"
+    fi
+    ln -s "../../../current/PlayerProfiles/Public/modsettings.lsx" "Baldur's Gate 3/PlayerProfiles/Public/"
+  fi
+  if [ ! -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
+    echo "Creating empty modsettings file …"
+    touch "${_dir}/PlayerProfiles/Public/modsettings.lsx"
+  fi
+
+  # sym link the “ScriptExtender” folder
+  if [ ! -L "Baldur's Gate 3/Script Extender" ]; then
+    echo "Non-link \"Script Extender\" folder detected! Setting up symbolic link …"
+    if [ -d "Baldur's Gate 3/Script Extender/" ]; then
+      mv "Baldur's Gate 3/Script Extender/" "${_dir}"
+    fi
+    ln -s "../current/Script Extender" "Baldur's Gate 3/Script Extender"
+  fi
+  if [ ! -d "${_dir}/Script Extender" ]; then
+    echo "Creating \"Script Extender\" folder …"
+    mkdir -p "${_dir}/Script Extender"
+  fi
+
+  # create override folders for loose files mods
+  if [ ! -d "${_dir}/override" ]; then
+    echo "Creating \"override\" folder …"
+    mkdir "${_dir}/override"
+  fi
+  if [ ! -d "${_dir}/modular-override" ]; then
+    echo "Creating \"modular-override\" folder …"
+    mkdir "${_dir}/modular-override"
   fi
 }
 
@@ -75,13 +92,13 @@ list () {
 }
 
 switch () {
-  if [ -d profiles/${1} ]; then
-    # check for “Script Extender” folder
-    if [ ! -d "profiles/${1}/Script Extender/" ]; then
-      echo "Creating missing \"Script Extender\" folder …"
-      mkdir "profiles/${1}/Script Extender"
-    fi
+  if [ -z ${1} ]; then
+    echo "No profile name given!"
+    exit 1
+  fi
 
+  if [ -d profiles/${1} ]; then
+    link "${1}"
     ln -nsf ./profiles/${1} current
   else
     echo "No Baldur’s Gate 3 folder for \"${1}\" found. Try \"$(basename $0) --help\""
@@ -93,14 +110,17 @@ usage () {
   cat << EOF
 Usage: $(basename $0) [OPTION] PROFILE
 Options:
-  --create,--add,--new          Creates a new mod profile. If this is your first, your current
-                                mods will be moved to the profile and the necessary 
+  --create,--add,--new          Creates a new mod profile under PROFILE. If this is your first,
+                                your current mods will be moved to the profile and the necessary 
                                 symbolic links set up automatically.
   --help,-h                     Prints this help.
+  --link                        Checks if the necessary folders are sym linked. If not, creates
+                                them. Will link to \`current\` unless a PROFILE is given.
   --open,--cd                   Opens a new shell in the "%AppData%/Local/Larian Studios" folder.
-  --switch                      Switch to <profile>.
+  --switch                      Switch to PROFILE.
 
-Empty argument list is equivalent to "--list". A single argument is equal to "--switch argument".
+Empty argument list is equivalent to "--list". A single argument is equivalent to
+"--switch <argument>".
 EOF
 }
 
@@ -114,6 +134,9 @@ else
     --help|-h)
       usage
       exit 1
+      ;;
+    --link)
+      link $2
       ;;
     --list|--ls)
       list
