@@ -1,4 +1,8 @@
-# devel
+# 1.0.0 (2023-11-26)
+
+**BREAKING CHANGE**: Support for the “Script Extender” folder means you will 
+have to copy your “Script Extender” folder across profiles (or sym link it) if 
+you want to retain your Script Extender mods settings/data across profiles.
 
 * Changing profile now also automatically runs `--link [PROFILE]` to make sure 
   that additions like the Script Extender folder will not break existing 
