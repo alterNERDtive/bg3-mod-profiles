@@ -123,31 +123,30 @@ Empty argument list is equivalent to "--list". A single argument is equivalent t
 EOF
 }
 
-if [ $# -eq 0 ]; then
-  list
-else
-  case $1 in
-    --create|--add|--new)
-      create $2
-      ;;
-    --help|-h)
-      usage
-      exit 1
-      ;;
-    --link)
-      link $2
-      ;;
-    --list|--ls)
-      list
-      ;;
-    --open|--cd)
-      $SHELL
-      ;;
-    --switch)
-      switch $2
-      ;;
-    *)
-      switch $1
-      ;;
-  esac
-fi
+case "$1" in
+  --create|--add|--new)
+    create "$2"
+    ;;
+  --help|-h)
+    usage
+    exit 1
+    ;;
+  --link)
+    link "$2"
+    ;;
+  --list|--ls)
+    list
+    ;;
+  --open|--cd)
+    $SHELL
+    ;;
+  --switch)
+    switch "$2"
+    ;;
+  "")
+    list
+    ;;
+  *)
+    switch "$1"
+    ;;
+esac
