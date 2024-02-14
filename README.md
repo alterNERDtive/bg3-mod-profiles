@@ -1,5 +1,7 @@
 # Baldur’s Gate 3 Mod Profiles
 
+[![basher install](https://www.basher.it/assets/logo/basher_install.svg)](https://www.basher.it/package/)
+
 **This is _not_ a mod manager!** It is a collection of Bash scripts that can
 manage separate sets of mods in conjunction with a mod manager like
 [BG3 Mod Manager](https://github.com/LaughingLeader/BG3ModManager) or
@@ -22,21 +24,49 @@ mods. Read on :)
 
 ## Installation
 
-1. Install whatever package(s) provide(s) `fusermount` and `fuse-overlayfs` for
-    your distribution.
-2. Clone this repository or grab an archive and extract it somewhere.
-3. Optional: add `bg3overlay` and `bg3switch` to your `PATH`.
-4. Optional: create `bg3overlay.pre` and `bg3overlay.post` files. They will be
-    executed before mounting and after unmounting the overlay, respectively.
-5. Create a new mod profile using `bg3switch --create PROFILE`.
-6. Change Baldur’s Gate 3’s launch options in Steam:
-    1. Right Click → Properties → General → Launch Options
-    2. Set it to `bg3overlay --enable && %command% ; bg3overlay --disable`. If
-        you already had launch options set, don’t forget to keep them. If you
-        did not add the scripts to your `PATH`, you need to add the full
-        `/path/to/bg3overlay`.
+The overlay script depends on `fusermount`/`fuse-overlayfs`, so you will 
+probably want to install whatever package(s) provide(s) those for your 
+distribution.
+
+Now install the scripts via Basher:
+
+```bash
+basher install git.alterNERD.tv/alterNERDtive/bg3-mod-profiles
+```
+
+(Github mirror: `basher install alterNERDtive/bg3-mod-profiles`)
+
+or manually:
+
+    1. Clone this repository or grab an archive and extract it somewhere.
+    2. Symlink or copy `bg3overlay` and `bg3switch` into your `PATH`.
+
+Next you need to change Baldur’s Gate 3’s launch options in Steam:
+
+1. Right Click → Properties → General → Launch Options
+2. Set it to `bg3overlay --enable && %command% ; bg3overlay --disable`. If
+   you already had launch options set, don’t forget to keep them. If you
+   did not add the scripts to your `PATH`, you need to add the full
+   `/path/to/bg3overlay`.
 
 You might also have to disable Steam Cloud Sync for the game.
+
+To get started, you need to create at least one mod profile using `bg3switch 
+--create PROFILE`.
+
+## Configuration
+
+The configuration lives in `$XDG_CONFIG_HOME/bg3-mod-profiles/config` or 
+`~/.config/bg3-mod-profiles/config`.
+
+| option | default | description |
+|--------|---------|-------------|
+| BG3_DATA_DIR | auto-detected for Steam | The game’s “%APPDATA%” folder. |
+| BG3_INSTALL_DIR | auto-detected for Steam | The game’s installation folder. |
+
+You can also create `bg3overlay.pre` and `bg3overlay.post` files in the 
+configuration folder. They will be executed before mounting and after unmounting 
+the overlay, respectively.
 
 ## Installing / Updating Mods
 
@@ -71,7 +101,7 @@ proton prefix. You can easily access it by running `bg3switch --cd`.
 
 ## Usage
 
-See [Installation](#installation), `bg3switch --help` and `bg3overlay --help`.
+See [Configuration](#configuration), `bg3switch --help` and `bg3overlay --help`.
 
 ## How It Works
 
