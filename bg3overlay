@@ -45,7 +45,8 @@ done
 
 source "$(dirname "$(realpath "$0")")/util/folders.sh"
 
-while read line; do declare "$line"; done < "${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
+CONFIG_FILE="${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
+while read line; do declare "$line"; done < "${CONFIG_FILE}"
 
 if [ -z "${BG3_DATA_DIR}" ] || [ -z "${BG3_INSTALL_DIR}" ]; then
   _library="$(getBg3Library)"
@@ -66,7 +67,9 @@ case $1 in
       exit 1
     fi
     unmount_overlay
-    [ -f "$(dirname "$(realpath "$0")")/bg3overlay.post" ] && . "$(dirname "$(realpath "$0")")/bg3overlay.post"
+    [ -f "$(dirname "${CONFIG_FILE}")/bg3overlay.post" ] && . "$(dirname "${CONFIG_FILE}")/bg3overlay.post"
+    [ -f "$(dirname "$(realpath "$0")")/bg3overlay.post" ] && . "$(dirname "$(realpath "$0")")/bg3overlay.post" \
+      && echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
     exit 0
     ;;
   --enable)
@@ -74,7 +77,10 @@ case $1 in
       echo "Overlay already mounted."
       exit 1
     fi
-    [ -f "$(dirname $(realpath "$0"))/bg3overlay.pre" ] && . "$(dirname $(realpath "$0"))/bg3overlay.pre"
+    [ -f "$(dirname ${CONFIG_FILE})/bg3overlay.pre" ] && . "$(dirname ${CONFIG_FILE})/bg3overlay.pre"
+    [ -f "$(dirname $(realpath "$0"))/bg3overlay.pre" ] && . "$(dirname $(realpath "$0"))/bg3overlay.pre" \
+      && echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
+    exit
     mount_overlay
     exit 0
     ;;
