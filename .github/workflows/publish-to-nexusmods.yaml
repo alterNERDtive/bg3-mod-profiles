@@ -1,0 +1,33 @@
+name: Publish to Nexusmods on release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Publish to Nexusmods
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Download release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download ${{ github.ref_name }}
+      
+      - name: Publish to Nexusmods
+        uses: hmlendea/nexusmods-update@latest
+        with:
+          account_email_address: ${{secrets.NEXUS_UPLOADER_EMAIL_ADDRESS}}
+          account_password: ${{secrets.NEXUS_UPLOADER_PASSWORD}}
+          nexus_game_id: "baldursgate3"
+          nexus_mod_id: "3458"
+          mod_file_name: "bg3-mod-profiles"
+          mod_version: ${{github.ref_name}}
+          file_description: "Changelog: https://git.alternerd.tv/alterNERDtive/bg3-mod-profiles/releases/${{github.ref_name}}"
+          file_path: "bg3-mod-profiles.zip"
