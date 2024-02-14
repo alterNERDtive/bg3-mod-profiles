@@ -1,11 +1,4 @@
 #!/usr/bin/env bash
-source "$(dirname $(realpath $0))/util/folders.sh"
-
-_library="$(getBg3Library)"
-[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-
-cd "${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/"
-
 create () {
   if [ -d "profiles/${1}" ]; then
     echo "Baldur’s Gate 3 folder for \"${1}\" already exists."
@@ -122,6 +115,18 @@ Empty argument list is equivalent to "--list". A single argument is equivalent t
 "--switch <argument>".
 EOF
 }
+
+source "$(dirname $(realpath $0))/util/folders.sh"
+
+while read line; do declare "$line"; done < "${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
+
+if [ -z "$BG3_DATA_DIR" ]; then
+  _library="$(getBg3Library)"
+  [ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+  BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3/"
+fi
+
+cd "$(dirname "${BG3_DATA_DIR}")"
 
 case "$1" in
   --create|--add|--new)
