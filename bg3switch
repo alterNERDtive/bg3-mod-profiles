@@ -13,7 +13,6 @@ create () {
   else
     mkdir "profiles/${1}"
 
-
     switch "${1}"
   fi
 }
@@ -92,14 +91,14 @@ list () {
 }
 
 switch () {
-  if [ -z ${1} ]; then
+  if [ -z "${1}" ]; then
     echo "No profile name given!"
     exit 1
   fi
 
-  if [ -d profiles/${1} ]; then
+  if [ -d "profiles/${1}" ]; then
     link "${1}"
-    ln -nsf ./profiles/${1} current
+    ln -nsf "./profiles/${1}" current
   else
     echo "No Baldur’s Gate 3 folder for \"${1}\" found. Try \"$(basename $0) --help\""
     exit 1
