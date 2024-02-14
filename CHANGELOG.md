@@ -1,3 +1,14 @@
+# 1.1.0 (2024-02-14)
+
+* DEPRECATED: overlay hooks should no longer be placed in the installation 
+  folder of the scripts. They will still work, for now, and be executed _in 
+  addition_ to the hooks in the new default location.
+
+* Added configuration file (see README). The scripts can now be used with the 
+  GOG (or any other) version of the game if the game paths are set in the 
+  configuration.
+* Moved overlay hooks to the configuration folder.
+
 # 1.0.0 (2023-11-26)
 
 **BREAKING CHANGE**: Support for the “Script Extender” folder means you will 
