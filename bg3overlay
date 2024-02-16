@@ -80,7 +80,6 @@ case $1 in
     [ -f "$(dirname ${CONFIG_FILE})/bg3overlay.pre" ] && . "$(dirname ${CONFIG_FILE})/bg3overlay.pre"
     [ -f "$(dirname $(realpath "$0"))/bg3overlay.pre" ] && . "$(dirname $(realpath "$0"))/bg3overlay.pre" \
       && echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
-    exit
     mount_overlay
     exit 0
     ;;
