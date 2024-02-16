@@ -1,3 +1,7 @@
+# 1.1.1 (2024-02-17)
+
+* Fixed: Rogue `exit` statement left over from debugging breaking the overlay …
+
 # 1.1.0 (2024-02-14)
 
 * DEPRECATED: overlay hooks should no longer be placed in the installation 
