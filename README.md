@@ -61,7 +61,7 @@ that your game installation folder is a valid BTRFS snapshot, e.g.:
 
 ```bash
 > mv Baldurs\ Gate\ 3 tmpdir
-> sudo bfrs sub snap create Baldurs\ Gate\ 3
+> sudo bfrs sub create Baldurs\ Gate\ 3
 > mv tmpdir/* !$
 > rmdir tmpdir
 ```
