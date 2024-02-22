@@ -119,7 +119,7 @@ EOF
 source "$(dirname $(realpath $0))/util/folders.sh"
 
 CONFIG_FILE="${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
-if [ -f "${CONFIG_FILE}"]; then
+if [ -f "${CONFIG_FILE}" ]; then
 	while read line; do declare "$line"; done <"${CONFIG_FILE}"
 fi
 
