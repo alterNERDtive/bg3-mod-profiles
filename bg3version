@@ -6,12 +6,12 @@ die() {
 
 activate() {
 	local version="${1:-current}"
-	check "${_folder}" "bg3.${version}"
+	check "${BG3_INSTALL_DIR}" "bg3.${version}"
 
 	echo "Removing current game folder …"
-	sudo btrfs sub del "${_folder}"
+	sudo btrfs sub del "${BG3_INSTALL_DIR}"
 	echo "Creating snapshot of \"bg3.${version}\" …"
-	sudo btrfs sub snap "bg3.${version}" "${_folder}"
+	sudo btrfs sub snap "bg3.${version}" "${BG3_INSTALL_DIR}"
 }
 
 check() {
@@ -24,7 +24,7 @@ check() {
 }
 
 create() {
-	check "${_folder}"
+	check "${BG3_INSTALL_DIR}"
 	local version="${1}"
 
 	if [ -z "${version}" ]; then
@@ -32,7 +32,7 @@ create() {
 	fi
 
 	echo "Creating snapshot \"bg3.${version}\" …"
-	sudo btrfs sub snap "${_folder}" "bg3.${version}"
+	sudo btrfs sub snap "${BG3_INSTALL_DIR}" "bg3.${version}"
 }
 
 delete() {
@@ -75,22 +75,13 @@ if [ -f "${CONFIG_FILE}" ]; then
 	while read line; do declare "$line"; done <"${CONFIG_FILE}"
 fi
 
-if [ -z "${BG3_DATA_DIR}" ] || [ -z "${BG3_INSTALL_DIR}" ]; then
+if [ -z "${BG3_INSTALL_DIR}" ]; then
 	_library="$(getBg3Library)"
 	[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-	BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3"
 	BG3_INSTALL_DIR="${_library}/steamapps/common/Baldurs Gate 3"
 fi
 
 cd "$(dirname "${BG3_INSTALL_DIR}")"
-
-_library="$(getBg3Library)"
-[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-_common="${_library}/steamapps/common"
-_folder="$(getBg3Folder ${_library})"
-[ $? -eq 1 ] && echo "Steam installation folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-
-cd "${_common}"
 
 case $1 in
 --create | --snap)

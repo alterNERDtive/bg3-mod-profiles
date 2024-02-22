@@ -1,3 +1,8 @@
+* devel
+
+* Fixed: `bg3version` now respects the installation folder set in the config
+file.
+
 # 2.0.0 (2024-02-22)
 
 * Added: **Experimental** BTRFS snapshot support for the game installation
