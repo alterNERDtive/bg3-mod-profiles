@@ -1,4 +1,4 @@
-# devel
+# 2.0.1 (2024-02-22)
 
 * Fixed: `bg3version` now respects the installation folder set in the config
 file.
