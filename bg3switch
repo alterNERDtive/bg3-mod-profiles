@@ -1,105 +1,105 @@
 #!/usr/bin/env bash
-create () {
-  if [ -d "profiles/${1}" ]; then
-    echo "Baldur’s Gate 3 folder for \"${1}\" already exists."
-    exit 1
-  else
-    mkdir "profiles/${1}"
+create() {
+	if [ -d "profiles/${1}" ]; then
+		echo "Baldur’s Gate 3 folder for \"${1}\" already exists."
+		exit 1
+	else
+		mkdir "profiles/${1}"
 
-    switch "${1}"
-  fi
+		switch "${1}"
+	fi
 }
 
-link () {
-  if [ -z ${1} ]; then
-    _dir="current"
-  else
-    _dir="profiles/${1}"
-  fi
+link() {
+	if [ -z ${1} ]; then
+		_dir="current"
+	else
+		_dir="profiles/${1}"
+	fi
 
-  # sym link the “Mods” folder
-  if [ ! -L "Baldur's Gate 3/Mods" ]; then
-    echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
-    if [ -d "Baldur's Gate 3/Mods/" ]; then
-      mv "Baldur's Gate 3/Mods/" "${_dir}"
-    fi
-    ln -s "../current/Mods" "Baldur's Gate 3/Mods"
-  fi
-  if [ ! -d "${_dir}/Mods" ]; then
-    echo "Creating \"Mods\" folder …"
-    mkdir -p "${_dir}/Mods"
-  fi
+	# sym link the “Mods” folder
+	if [ ! -L "Baldur's Gate 3/Mods" ]; then
+		echo "Non-link \"Mods\" folder detected! Setting up symbolic link …"
+		if [ -d "Baldur's Gate 3/Mods/" ]; then
+			mv "Baldur's Gate 3/Mods/" "${_dir}"
+		fi
+		ln -s "../current/Mods" "Baldur's Gate 3/Mods"
+	fi
+	if [ ! -d "${_dir}/Mods" ]; then
+		echo "Creating \"Mods\" folder …"
+		mkdir -p "${_dir}/Mods"
+	fi
 
-  # sym link the modsettings file
-  mkdir -p "${_dir}/PlayerProfiles/Public/"
-  if [ ! -L "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" ]; then
-    echo "Non-link \"modsettings.lsx\" detected! Setting up symbolic link …"
-    if [ -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
-      mv "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" "${_dir}/PlayerProfiles/Public/"
-    fi
-    ln -s "../../../current/PlayerProfiles/Public/modsettings.lsx" "Baldur's Gate 3/PlayerProfiles/Public/"
-  fi
-  if [ ! -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
-    echo "Creating empty modsettings file …"
-    touch "${_dir}/PlayerProfiles/Public/modsettings.lsx"
-  fi
+	# sym link the modsettings file
+	mkdir -p "${_dir}/PlayerProfiles/Public/"
+	if [ ! -L "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" ]; then
+		echo "Non-link \"modsettings.lsx\" detected! Setting up symbolic link …"
+		if [ -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
+			mv "Baldur's Gate 3/PlayerProfiles/Public/modsettings.lsx" "${_dir}/PlayerProfiles/Public/"
+		fi
+		ln -s "../../../current/PlayerProfiles/Public/modsettings.lsx" "Baldur's Gate 3/PlayerProfiles/Public/"
+	fi
+	if [ ! -f "${_dir}/PlayerProfiles/Public/modsettings.lsx" ]; then
+		echo "Creating empty modsettings file …"
+		touch "${_dir}/PlayerProfiles/Public/modsettings.lsx"
+	fi
 
-  # sym link the “ScriptExtender” folder
-  if [ ! -L "Baldur's Gate 3/Script Extender" ]; then
-    echo "Non-link \"Script Extender\" folder detected! Setting up symbolic link …"
-    if [ -d "Baldur's Gate 3/Script Extender/" ]; then
-      mv "Baldur's Gate 3/Script Extender/" "${_dir}"
-    fi
-    ln -s "../current/Script Extender" "Baldur's Gate 3/Script Extender"
-  fi
-  if [ ! -d "${_dir}/Script Extender" ]; then
-    echo "Creating \"Script Extender\" folder …"
-    mkdir -p "${_dir}/Script Extender"
-  fi
+	# sym link the “ScriptExtender” folder
+	if [ ! -L "Baldur's Gate 3/Script Extender" ]; then
+		echo "Non-link \"Script Extender\" folder detected! Setting up symbolic link …"
+		if [ -d "Baldur's Gate 3/Script Extender/" ]; then
+			mv "Baldur's Gate 3/Script Extender/" "${_dir}"
+		fi
+		ln -s "../current/Script Extender" "Baldur's Gate 3/Script Extender"
+	fi
+	if [ ! -d "${_dir}/Script Extender" ]; then
+		echo "Creating \"Script Extender\" folder …"
+		mkdir -p "${_dir}/Script Extender"
+	fi
 
-  # create override folders for loose files mods
-  if [ ! -d "${_dir}/override" ]; then
-    echo "Creating \"override\" folder …"
-    mkdir "${_dir}/override"
-  fi
-  if [ ! -d "${_dir}/modular-override" ]; then
-    echo "Creating \"modular-override\" folder …"
-    mkdir "${_dir}/modular-override"
-  fi
+	# create override folders for loose files mods
+	if [ ! -d "${_dir}/override" ]; then
+		echo "Creating \"override\" folder …"
+		mkdir "${_dir}/override"
+	fi
+	if [ ! -d "${_dir}/modular-override" ]; then
+		echo "Creating \"modular-override\" folder …"
+		mkdir "${_dir}/modular-override"
+	fi
 }
 
-list () {
-  if [ -d "profiles" ]; then
-    echo -e "Mod Profiles:"
-    ls profiles | tr " " "\n"
-  else
-    echo "No profile folder present. Try \"$(basename $0) --create PROFILE\"."
-  fi
-  current=$(readlink -- current)
-  if [ -z $current ]; then
-    echo -e "\nNo link to current profile found. Try \"$(basename $0) --create PROFILE\"."
-  else
-    echo -e "\nCurrent Profile:\n${current##*/}"
-  fi
+list() {
+	if [ -d "profiles" ]; then
+		echo -e "Mod Profiles:"
+		ls profiles | tr " " "\n"
+	else
+		echo "No profile folder present. Try \"$(basename $0) --create PROFILE\"."
+	fi
+	current=$(readlink -- current)
+	if [ -z $current ]; then
+		echo -e "\nNo link to current profile found. Try \"$(basename $0) --create PROFILE\"."
+	else
+		echo -e "\nCurrent Profile:\n${current##*/}"
+	fi
 }
 
-switch () {
-  if [ -z "${1}" ]; then
-    echo "No profile name given!"
-    exit 1
-  fi
+switch() {
+	if [ -z "${1}" ]; then
+		echo "No profile name given!"
+		exit 1
+	fi
 
-  if [ -d "profiles/${1}" ]; then
-    link "${1}"
-    ln -nsf "./profiles/${1}" current
-  else
-    echo "No Baldur’s Gate 3 folder for \"${1}\" found. Try \"$(basename $0) --help\""
-    exit 1
-  fi
+	if [ -d "profiles/${1}" ]; then
+		link "${1}"
+		ln -nsf "./profiles/${1}" current
+	else
+		echo "No Baldur’s Gate 3 folder for \"${1}\" found. Try \"$(basename $0) --help\""
+		exit 1
+	fi
 }
 
-usage () {
-  cat << EOF
+usage() {
+	cat <<EOF
 Usage: $(basename $0) [OPTION] PROFILE
 Options:
   --create,--add,--new          Creates a new mod profile under PROFILE. If this is your first,
@@ -118,40 +118,43 @@ EOF
 
 source "$(dirname $(realpath $0))/util/folders.sh"
 
-while read line; do declare "$line"; done < "${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
+CONFIG_FILE="${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
+if [ -f "${CONFIG_FILE}"]; then
+	while read line; do declare "$line"; done <"${CONFIG_FILE}"
+fi
 
 if [ -z "$BG3_DATA_DIR" ]; then
-  _library="$(getBg3Library)"
-  [ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-  BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3/"
+	_library="$(getBg3Library)"
+	[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+	BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3/"
 fi
 
 cd "$(dirname "${BG3_DATA_DIR}")"
 
 case "$1" in
-  --create|--add|--new)
-    create "$2"
-    ;;
-  --help|-h)
-    usage
-    exit 1
-    ;;
-  --link)
-    link "$2"
-    ;;
-  --list|--ls)
-    list
-    ;;
-  --open|--cd)
-    $SHELL
-    ;;
-  --switch)
-    switch "$2"
-    ;;
-  "")
-    list
-    ;;
-  *)
-    switch "$1"
-    ;;
+--create | --add | --new)
+	create "$2"
+	;;
+--help | -h)
+	usage
+	exit 1
+	;;
+--link)
+	link "$2"
+	;;
+--list | --ls)
+	list
+	;;
+--open | --cd)
+	$SHELL
+	;;
+--switch)
+	switch "$2"
+	;;
+"")
+	list
+	;;
+*)
+	switch "$1"
+	;;
 esac

@@ -1,3 +1,7 @@
+# devel
+
+* Fixed: Unintended error message when the config file does not exist.
+
 # 1.1.1 (2024-02-17)
 
 * Fixed: Rogue `exit` statement left over from debugging breaking the overlay …

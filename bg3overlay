@@ -1,58 +1,59 @@
 #!/usr/bin/env bash
 die() {
-  echo "${1}"
-  exit 1
+	echo "${1}"
+	exit 1
 }
 
 mount_overlay() {
-  mv "${BG3_INSTALL_DIR}" bg3.base
-  mkdir "${BG3_INSTALL_DIR}"
-  mkdir -p /tmp/bg3/{upper,work}
+	mv "${BG3_INSTALL_DIR}" bg3.base
+	mkdir "${BG3_INSTALL_DIR}"
+	mkdir -p /tmp/bg3/{upper,work}
 
-  declare -A _modulars=()
+	declare -A _modulars=()
 
-  _current="$(dirname "${BG3_DATA_DIR}")/current"
-  if [ -d "${_current}/modular-override" ]; then
-    pushd "${_current}/modular-override"
-    for _override in *
-    do
-      [ -d "${_override}" ] && _modulars["${_override}"]="${_current}/modular-override/${_override}" \
-        && echo "Found modular loose files mod “${_override}” …"
-    done
-    popd
-  fi
+	_current="$(dirname "${BG3_DATA_DIR}")/current"
+	if [ -d "${_current}/modular-override" ]; then
+		pushd "${_current}/modular-override"
+		for _override in *; do
+			[ -d "${_override}" ] && _modulars["${_override}"]="${_current}/modular-override/${_override}" &&
+				echo "Found modular loose files mod “${_override}” …"
+		done
+		popd
+	fi
 
-  if [[ ! "${#_modulars[*]}" -eq 0 ]]; then
-    # fugly, but I give up on doing this properly for now
-    _modular_overrides=$(printf "%s♫" ${_modulars[@]// /\\ })
-    _modular_overrides=${_modular_overrides//\\♫/\\ }
-    _modular_overrides=${_modular_overrides//♫/:}
-  fi
+	if [[ ! "${#_modulars[*]}" -eq 0 ]]; then
+		# fugly, but I give up on doing this properly for now
+		_modular_overrides=$(printf "%s♫" ${_modulars[@]// /\\ })
+		_modular_overrides=${_modular_overrides//\\♫/\\ }
+		_modular_overrides=${_modular_overrides//♫/:}
+	fi
 
-  fuse-overlayfs -o lowerdir="${_current}/override":"${_modular_overrides}""$(dirname "${BG3_INSTALL_DIR}")/bg3.base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${BG3_INSTALL_DIR}"
+	fuse-overlayfs -o lowerdir="${_current}/override":"${_modular_overrides}""$(dirname "${BG3_INSTALL_DIR}")/bg3.base",upperdir=/tmp/bg3/upper,workdir=/tmp/bg3/work overlayfs "${BG3_INSTALL_DIR}"
 }
 
 unmount_overlay() {
-  fusermount -u "${BG3_INSTALL_DIR}"
-  rmdir "${BG3_INSTALL_DIR}"
-  mv bg3.base "${BG3_INSTALL_DIR}"
-  rm -rf /tmp/bg3/work
+	fusermount -u "${BG3_INSTALL_DIR}"
+	rmdir "${BG3_INSTALL_DIR}"
+	mv bg3.base "${BG3_INSTALL_DIR}"
+	rm -rf /tmp/bg3/work
 }
 
 for _dep in fuse-overlayfs fusermount; do
-    command -v "${_dep}" > /dev/null || die "Command \"${_dep}\" not found. Please install it and try again."
+	command -v "${_dep}" >/dev/null || die "Command \"${_dep}\" not found. Please install it and try again."
 done
 
 source "$(dirname "$(realpath "$0")")/util/folders.sh"
 
 CONFIG_FILE="${CONFIG_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/bg3-mod-profiles/config}"
-while read line; do declare "$line"; done < "${CONFIG_FILE}"
+if [ -f "${CONFIG_FILE}"]; then
+	while read line; do declare "$line"; done <"${CONFIG_FILE}"
+fi
 
 if [ -z "${BG3_DATA_DIR}" ] || [ -z "${BG3_INSTALL_DIR}" ]; then
-  _library="$(getBg3Library)"
-  [ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
-  BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3"
-  BG3_INSTALL_DIR="${_library}/steamapps/common/Baldurs Gate 3"
+	_library="$(getBg3Library)"
+	[ $? -eq 1 ] && echo "Steam library folder for Baldur’s Gate 3 not found! Exiting …" && exit 1
+	BG3_DATA_DIR="${_library}/steamapps/compatdata/1086940/pfx/drive_c/users/steamuser/AppData/Local/Larian Studios/Baldur's Gate 3"
+	BG3_INSTALL_DIR="${_library}/steamapps/common/Baldurs Gate 3"
 fi
 
 cd "$(dirname "${BG3_INSTALL_DIR}")"
@@ -61,35 +62,35 @@ mount | grep "${BG3_INSTALL_DIR}" >/dev/null 2>&1
 _mounted=$?
 
 case $1 in
-  --disable)
-    if [ ${_mounted} -eq 1 ]; then
-      echo "Overlay not mounted."
-      exit 1
-    fi
-    unmount_overlay
-    [ -f "$(dirname "${CONFIG_FILE}")/bg3overlay.post" ] && . "$(dirname "${CONFIG_FILE}")/bg3overlay.post"
-    [ -f "$(dirname "$(realpath "$0")")/bg3overlay.post" ] && . "$(dirname "$(realpath "$0")")/bg3overlay.post" \
-      && echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
-    exit 0
-    ;;
-  --enable)
-    if [ ${_mounted} -eq 0 ]; then
-      echo "Overlay already mounted."
-      exit 1
-    fi
-    [ -f "$(dirname ${CONFIG_FILE})/bg3overlay.pre" ] && . "$(dirname ${CONFIG_FILE})/bg3overlay.pre"
-    [ -f "$(dirname $(realpath "$0"))/bg3overlay.pre" ] && . "$(dirname $(realpath "$0"))/bg3overlay.pre" \
-      && echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
-    mount_overlay
-    exit 0
-    ;;
-  *)
-    cat << EOF
+--disable)
+	if [ ${_mounted} -eq 1 ]; then
+		echo "Overlay not mounted."
+		exit 1
+	fi
+	unmount_overlay
+	[ -f "$(dirname "${CONFIG_FILE}")/bg3overlay.post" ] && . "$(dirname "${CONFIG_FILE}")/bg3overlay.post"
+	[ -f "$(dirname "$(realpath "$0")")/bg3overlay.post" ] && . "$(dirname "$(realpath "$0")")/bg3overlay.post" &&
+		echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
+	exit 0
+	;;
+--enable)
+	if [ ${_mounted} -eq 0 ]; then
+		echo "Overlay already mounted."
+		exit 1
+	fi
+	[ -f "$(dirname ${CONFIG_FILE})/bg3overlay.pre" ] && . "$(dirname ${CONFIG_FILE})/bg3overlay.pre"
+	[ -f "$(dirname $(realpath "$0"))/bg3overlay.pre" ] && . "$(dirname $(realpath "$0"))/bg3overlay.pre" &&
+		echo "Overlay hooks in the installation folder are deprecated. Please move them to $(dirname "${CONFIG_FILE}")/."
+	mount_overlay
+	exit 0
+	;;
+*)
+	cat <<EOF
 Usage: $(basename "$0") OPTION
 Options:
   --enable                      Mount overlayfs for current mod profile.
   --disable                     Unmount overlayfs.
 EOF
-    exit 1
-    ;;
+	exit 1
+	;;
 esac
