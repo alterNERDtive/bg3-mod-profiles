@@ -36,3 +36,15 @@ jobs:
             bg3-mod-profiles-for-linux.zip
           draft: true
           api_key: "${{ secrets.RELEASE_TOKEN }}"
+
+      - name: Publish to Nexusmods
+        uses: hmlendea/nexusmods-update@latest
+        with:
+          account_email_address: ${{secrets.NEXUS_UPLOADER_EMAIL_ADDRESS}}
+          account_password: ${{secrets.NEXUS_UPLOADER_PASSWORD}}
+          nexus_game_id: "baldursgate3"
+          nexus_mod_id: "3458"
+          mod_file_name: "bg3-mod-profiles"
+          mod_version: ${{github.ref_name}}
+          file_description: "Changelog: https://git.alternerd.tv/alterNERDtive/bg3-mod-profiles/releases/${{github.ref_name}}"
+          file_path: "bg3-mod-profiles-for-linux.zip"

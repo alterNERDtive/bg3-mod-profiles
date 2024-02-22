@@ -19,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release download ${{ github.ref_name }}
-      
+
       - name: Publish to Nexusmods
         uses: hmlendea/nexusmods-update@latest
         with:
@@ -30,4 +30,4 @@ jobs:
           mod_file_name: "bg3-mod-profiles"
           mod_version: ${{github.ref_name}}
           file_description: "Changelog: https://git.alternerd.tv/alterNERDtive/bg3-mod-profiles/releases/${{github.ref_name}}"
-          file_path: "bg3-mod-profiles.zip"
+          file_path: "bg3-mod-profiles-for-linux.zip"
